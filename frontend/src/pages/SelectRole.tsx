@@ -15,7 +15,7 @@ function SelectRole() {
 
   const addRole = async () => {
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `${authService}/api/auth/add/role`,
         {
           role,
@@ -29,10 +29,39 @@ function SelectRole() {
       localStorage.setItem("token", data.token);
       setUser(data.user);
       Navigate("/", { replace: true });
-    } catch (error) {}
+    } catch (error) {
+      alert("something went wrong");
+      console.log(error);
+    }
   };
 
-  return <div>Select Role</div>;
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-white px-4 ">
+      <div className="w-full  max-w-sm space-y-6 ">
+        <h1 className="text-4xl text-[#E23744] text-center font bold">
+          Choose Your Role
+        </h1>
+        <div className="space-y-4">
+          {roles.map((r) => (
+            <button
+              key={r}
+              onClick={() => setRole(r)}
+              className={`
+              w-full rounded-xl cursor-pointer border px-4 py-3 text-sm font-medium capitalize transition ${role === r ? "border-[#E23744] bg-[#E23744] text-white" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}
+              `}
+            >
+              Continue as {r}
+            </button>
+          ))}
+        </div>
+        <button
+          disabled={!role}
+          onClick={addRole}
+          className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition ${role ? "border-[#E23744] bg-[#E23744] text-white hover:bg-[#d32f3a]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+        >Next</button>
+      </div>
+    </div>
+  );
 }
 
 export default SelectRole;
