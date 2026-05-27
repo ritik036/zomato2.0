@@ -48,4 +48,7 @@ export const addRestaurant = TryCatch(async (req: AuthenticatedRequest, res) => 
             formattedAddress,
         }
     })
+    return res.status(201).json({
+        message : "Restaurant created successfully"
+    })
 })
