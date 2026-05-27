@@ -5,7 +5,7 @@ import { CgShoppingCart } from "react-icons/cg";
 import { BiMapPin, BiSearch } from "react-icons/bi";
 
 function Navbar() {
-  const { isAuth } = useAppData();
+  const { isAuth, city } = useAppData();
   const currLocation = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -50,9 +50,9 @@ function Navbar() {
           <div className="mx-auto flex max-w-7xl items-center rounded-lg border shadow-sm ">
             <div className="flex items-center gap-2 px-3 border-r text-gray-700 ">
               <BiMapPin className="h-4 w-4 text-[#E23744]" />
-              <span className="text-sm truncate max-w-35 ">city</span>
+              <span className="text-sm truncate max-w-35 ">{city}</span>
             </div>
-            <BiSearch className="h-4 w-4 text-gray-400 " />
+            <BiSearch className="mx-2 h-6 w-6 text-gray-400 " />
             <input
               type="text"
               placeholder="search for restaurants"

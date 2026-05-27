@@ -6,12 +6,13 @@ import PublicRoute from "./components/PublicRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SelectRole from "./pages/SelectRole";
 import Navbar from "./components/Navbar";
+import Account from "./pages/Account";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
-      <Navbar/>
+        <Navbar />
         <Routes>
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
@@ -19,6 +20,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/select-role" element={<SelectRole />} />
+            <Route path="/account" element={<Account />} />
           </Route>
         </Routes>
         <Toaster />
