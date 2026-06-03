@@ -8,6 +8,7 @@ import {
 import { authService } from "../main";
 import axios from "axios";
 import { type LocationData, type AppContextType, type User } from "../types";
+import { Toaster } from "react-hot-toast";
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -70,6 +71,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
             data.address.village ||
             "your location",
         );
+        setLoadingLocation(false);
       } catch (error) {
         setLocation({
           latitude,
@@ -77,6 +79,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           formattedAddress: "current location",
         });
         setCity("failed to load");
+        setLoadingLocation(false);
       }
     });
   }, []);
@@ -96,6 +99,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       }}
     >
       {children}
+      <Toaster />
     </AppContext.Provider>
   );
 };

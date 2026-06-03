@@ -26,3 +26,21 @@ export interface AppContextType {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 // React.Dispatch<React.setStateAction<User | null >>
+
+
+export interface IRestaurant  {
+    _id : string;
+    name: string;
+    description?: string;
+    image: string;
+    ownerId: string;
+    phone: number;
+    isVerified: boolean;
+    autoLocation: {
+        type: "Point",
+        coordinates: [number, number] // [longitude, latitude]
+        formattedAddress: string;
+    },
+    isOpen: boolean,
+    createdAt: Date
+}

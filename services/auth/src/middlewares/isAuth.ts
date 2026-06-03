@@ -61,7 +61,7 @@ export const addUserRole = TryCatch(async (req: AuthenticatedRequest, res: Respo
 
     const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
         expiresIn: "15d"
-    })services/restaurant/src/middlewares/isAuth.ts
+    })
 
     res.json({ user, token })
 })

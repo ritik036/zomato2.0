@@ -3,9 +3,11 @@ import jwt from "jsonwebtoken"
 import TryCatch from "../middlewares/TryCatch.js";
 import { oauth2client } from "../config/googleApis.js";
 import axios from "axios";
+import { AuthenticatedRequest } from "../middlewares/isAuth.js";
 
 
 export const loginUser = TryCatch(async (req, res) => {
+    console.log("loggin in")
     const { code } = req.body;
 
     if (!code) {
@@ -35,5 +37,22 @@ export const loginUser = TryCatch(async (req, res) => {
         message: "Login Success",
         user,
         token
+    })
+})
+
+
+export const deleteAccount = TryCatch(async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+    console.log(user)
+    if (!user) {
+        return res.status(401).json({
+            message: "unauthorized user"
+        })
+    }
+    console.log(user._id)
+    await User.findByIdAndDelete({ id: user._id });
+    localStorage.setItem("token", "")
+    res.status(201).json({
+        message: "account deleted successfully"
     })
 })

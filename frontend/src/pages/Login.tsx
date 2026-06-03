@@ -24,8 +24,8 @@ const Login = () => {
       setUser(result.data.user);
       setIsAuth(true);
       navigate("/");
-    } catch (error) {
-      console.log(error);
+    } catch (error : any) {
+      console.log(error.message);
       toast.error("problem while login");
       setLoading(false);
     }

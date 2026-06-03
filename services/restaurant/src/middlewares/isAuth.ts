@@ -9,6 +9,7 @@ export interface IUser {
     role: string;
     image: string;
     email: string;
+    restaurantId : string;
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -29,6 +30,7 @@ export const isAuth = async (req: AuthenticatedRequest, res: Response, next: Nex
             res.status(401).json({
                 message: "please login - no token present"
             })
+            return;
         }
         const decodedValue = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
         if (!decodedValue || !decodedValue.user) {

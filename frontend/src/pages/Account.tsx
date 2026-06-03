@@ -3,6 +3,9 @@ import { useAppData } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { BiLogOut, BiMapPin, BiPackage } from "react-icons/bi";
+import { FiDelete } from "react-icons/fi";
+import axios from "axios";
+import { authService } from "../main";
 
 const Account = () => {
   const { user, setIsAuth, setUser } = useAppData();
@@ -15,6 +18,11 @@ const Account = () => {
     setIsAuth(false);
     navigate("/login");
     toast.success("logged out");
+  };
+
+  const deleteAccount = async () => {
+    await axios.delete(`${authService}/api/auth/delete`);
+    toast.success("account deleted successfully");
   };
 
   return (
@@ -50,6 +58,13 @@ const Account = () => {
           >
             <BiLogOut className="h-5 w-5 text-red-500" />
             <span className="font-medium ">Log Out</span>
+          </div>
+          <div
+            onClick={deleteAccount}
+            className="flex cursor-pointer items-center gap-4 p-5 hover:bg-gray-50"
+          >
+            <FiDelete className="h-5 w-5 text-red-500" />
+            <span className="font-medium ">Delete Your Account</span>
           </div>
         </div>
       </div>
