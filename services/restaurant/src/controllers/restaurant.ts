@@ -46,7 +46,7 @@ export const addRestaurant = TryCatch(async (req: AuthenticatedRequest, res) => 
         name, description, phone, image: uploadResult.url, ownerId: user._id,
         autoLocation: {
             type: "Point",
-            coordinates: [Number(latitude), Number(longitude)],
+            coordinates: [Number(longitude), Number(latitude)],
             formattedAddress,
         },
         isVerified: false
@@ -130,7 +130,66 @@ export const updateRestaurant = TryCatch(async (req: AuthenticatedRequest, res) 
         name, description
     }, { new: true })
     res.json({
-        message : "Restaurant Status Updated",
+        message: "Restaurant Status Updated",
         restaurant
     })
 })
+
+
+export const getNearbyRestaurant = TryCatch(async (req, res) => {
+    console.log("it requested this")
+    const { latitude, longitude, radius, search = "" } = req.query;
+    if (!latitude || !longitude) {
+        return res.status(400).json({
+            message: "latitude and longitude are required"
+        })
+    }
+    const radiusValue =
+        radius !== undefined && radius !== ""
+            ? Number(radius)
+            : 100000;
+    if (radius !== undefined && radius !== "" && Number.isNaN(radiusValue)) {
+        return res.status(400).json({
+            message: "radius must be a number"
+        })
+    }
+    const query: any = {}
+    if (search && typeof search === "string") {
+        query.name = { $regex: search, $options: "i" }
+    }
+    const restaurants = await Restaurant.aggregate([{
+        $geoNear: {
+            near: {
+                type: "Point",
+                coordinates: [Number(longitude), Number(latitude)]
+            },
+            distanceField: "distance",
+            maxDistance: radiusValue,
+            spherical: true,
+            query
+        }
+    },
+    {
+        $sort: {
+            isOpen: -1,
+            distance: 1
+        }
+    }, {
+        $addFields: {
+            distanceKm: {
+                $round: [{ $divide: ["$distance", 1000] }, 2]
+            }
+        }
+    }])
+    res.json({
+        success: true,
+        count: restaurants.length,
+        restaurants
+    })
+})
+
+export const fetchSingleRestaurant = TryCatch(async (req, res) => {
+    const restaurant = await Restaurant.findById(req.params.id)
+    res.json(restaurant);
+})
+
