@@ -5,9 +5,14 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { authService } from "../main";
+import { authService, restaurantService } from "../main";
 import axios from "axios";
-import { type LocationData, type AppContextType, type User } from "../types";
+import {
+  type LocationData,
+  type AppContextType,
+  type User,
+  type ICart,
+} from "../types";
 import { Toaster } from "react-hot-toast";
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -48,21 +53,53 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     fetchUser();
   }, []);
 
+  const [cart, setCart] = useState<ICart[]>([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  console.log("inside app context", quantity);
+  
+  async function fetchCart() {
+    console.log("fetching cart")
+    if (!user || user.role !== "customer") {
+      return;
+    }
+    console.log("got user, now to fetch cart")
+    try {
+      const { data } = await axios.get(`${restaurantService}/api/cart/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("data on fetching cart", data);
+      setCart(data.cart || []);
+      setSubTotal(data.subTotal || 0);
+      setQuantity(data.cartLength || 0);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (user && user.role === "customer") {
+      fetchCart();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!navigator.geolocation)
       return alert("please allow location to continue");
     setLoadingLocation(true);
 
     navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
+      const { longitude, latitude } = position.coords;
       try {
         const res = await fetch(
           ` https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
         );
         const data = await res.json();
         setLocation({
-          latitude,
           longitude,
+          latitude,
           formattedAddress: data.display_name || "current location",
         });
         setCity(
@@ -74,8 +111,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         setLoadingLocation(false);
       } catch (error) {
         setLocation({
-          latitude,
           longitude,
+          latitude,
           formattedAddress: "current location",
         });
         setCity("failed to load");
@@ -96,6 +133,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         city,
         loadingLocation,
         location,
+        cart,
+        fetchCart,
+        subTotal,
+        quantity,
+        setQuantity
       }}
     >
       {children}

@@ -52,8 +52,8 @@ function RestaurantProfile({ restaurant, isSeller, onUpdate }: props) {
         },
       );
       onUpdate(data.restaurant);
-      window.location.reload()
-      setEditMode(false)
+      window.location.reload();
+      setEditMode(false);
     } catch (error) {
       console.log(error);
       toast.error("failed to update");
@@ -99,6 +99,9 @@ function RestaurantProfile({ restaurant, isSeller, onUpdate }: props) {
             </button>
           </div>
         )}
+        {!isSeller && (
+          <h2 className="text-xl font-semibold">{restaurant.name}</h2>
+        )}
         {editMode ? (
           <textarea
             value={description}
@@ -137,8 +140,7 @@ function RestaurantProfile({ restaurant, isSeller, onUpdate }: props) {
           </div>
         </div>
         <p className="text-xs text-gray-400">
-          Created On {" "}
-          {new Date(restaurant.createdAt).toLocaleDateString()}
+          Created On {new Date(restaurant.createdAt).toLocaleDateString()}
         </p>
       </div>
     </div>

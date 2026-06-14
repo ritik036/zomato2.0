@@ -24,12 +24,18 @@ export interface AppContextType {
     setUser: React.Dispatch<React.SetStateAction<User | null>>
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setQuantity: React.Dispatch<React.SetStateAction<number>>
+
+    cart: ICart[] | null;
+    fetchCart: () => Promise<void>;
+    subTotal: number;
+    quantity: number;
 }
 // React.Dispatch<React.setStateAction<User | null >>
 
 
-export interface IRestaurant  {
-    _id : string;
+export interface IRestaurant {
+    _id: string;
     name: string;
     description?: string;
     image: string;
@@ -44,3 +50,27 @@ export interface IRestaurant  {
     isOpen: boolean,
     createdAt: Date
 }
+
+
+export interface IMenuItem {
+    _id: string,
+    restaurantId: string;
+    name: string;
+    description: string;
+    image?: string;
+    price: number;
+    isAvailable: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+
+export interface ICart {
+    userId: string
+    restaurantId: string | IRestaurant
+    itemId: string | IMenuItem
+    quantity: number,
+    createdAt: Date,
+    updatedAt: Date
+}
+

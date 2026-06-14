@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { type IRestaurant } from "../types";
+import { type IMenuItem, type IRestaurant } from "../types";
 import axios from "axios";
 import { restaurantService } from "../main";
 import AddRestaurant from "./AddRestaurant";
 import RestaurantProfile from "./RestaurantProfile";
+import MenuItems from "../components/MenuItems";
+import AddMenuItem from "../components/AddMenuItem";
+import { MdLocalLaundryService } from "react-icons/md";
 
 type sellerTab = "menu" | "add item" | "sales";
 
@@ -30,7 +33,9 @@ function Restaurant() {
     } catch (error) {
       // Log full error for easier debugging (response body if available)
       // eslint-disable-next-line no-console
-      console.error((error as any)?.response?.data || (error as any)?.message || error);
+      console.error(
+        (error as any)?.response?.data || (error as any)?.message || error,
+      );
     } finally {
       setLoading(false);
     }
@@ -39,6 +44,31 @@ function Restaurant() {
   useEffect(() => {
     fetchMyRestaurant();
   }, []);
+
+  const [menuItems, setMenuItems] = useState<IMenuItem[]>([]);
+
+  const fetchMenuItems = async (restaurantId: String) => {
+    try {
+      const { data } = await axios.get(
+        `${restaurantService}/api/item/all/${restaurantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      setMenuItems(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (restaurant?._id) {
+      fetchMenuItems(restaurant._id);
+    }
+  }, [restaurant]);
+
   if (loading)
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -73,15 +103,23 @@ function Restaurant() {
           ))}
         </div>
         <div className="p-5 ">
-          {
-            tab === "menu" && <p>Menu Page</p>
-          }
-          {
-            tab === "add item" && <p>Add Item Page</p>
-          }
-          {
-            tab === "sales" && <p>Sales Page</p>
-          }
+          {tab === "menu" && (
+            <MenuItems
+              items={menuItems}
+              onItemDeleted={() => {
+                fetchMenuItems(restaurant._id);
+              }}
+              isSeller={true}
+            />
+          )}
+          {tab === "add item" && (
+            <AddMenuItem
+              onItemAdded={() => {
+                fetchMenuItems(restaurant._id);
+              }}
+            />
+          )}
+          {tab === "sales" && <p>Sales Page</p>}
         </div>
       </div>
     </div>

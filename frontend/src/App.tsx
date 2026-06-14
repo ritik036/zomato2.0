@@ -9,6 +9,10 @@ import Navbar from "./components/Navbar";
 import Account from "./pages/Account";
 import { useAppData } from "./context/AppContext";
 import Restaurant from "./pages/Restaurant";
+import RestaurantPage from "./pages/RestaurantPage";
+import Cart from "./pages/Cart";
+import AddAddressPage from "./pages/Address";
+import Checkout from "./pages/Checkout";
 
 const App = () => {
   const { user } = useAppData();
@@ -25,9 +29,13 @@ const App = () => {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
+            <Route path="/address" element={<AddAddressPage />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/select-role" element={<SelectRole />} />
+            <Route path="/restaurant/:id" element={<RestaurantPage />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/delete" element={<Account/>}/>
+            <Route path="/delete" element={<Account />} />
           </Route>
         </Routes>
       </BrowserRouter>

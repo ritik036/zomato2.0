@@ -3,13 +3,17 @@ import { useAppData } from "../context/AppContext";
 import { useEffect, useState } from "react";
 import { CgShoppingCart } from "react-icons/cg";
 import { BiMapPin, BiSearch } from "react-icons/bi";
+import axios from "axios";
+import { restaurantService } from "../main";
 
-function Navbar() {
-  const { isAuth, city } = useAppData();
+ function Navbar() {
+  const { isAuth, city, quantity } = useAppData();
   const currLocation = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const isHomePage = currLocation.pathname === "/";
+  // console.log("qty",quantity)
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (search) {
@@ -34,7 +38,7 @@ function Navbar() {
           <Link to={"/cart"} className="relative">
             <CgShoppingCart className="h-6 w-6 text-[#E23744]" />
             <span className="absolute -top-2 -right-2 flex h-5 w-5 justify-center items-center rounded-full bg-[#E23744] text-xs font-semibold text-white">
-              0
+              {quantity}
             </span>
           </Link>
           {isAuth && (
