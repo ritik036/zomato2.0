@@ -13,6 +13,7 @@ import RestaurantPage from "./pages/RestaurantPage";
 import Cart from "./pages/Cart";
 import AddAddressPage from "./pages/Address";
 import Checkout from "./pages/Checkout";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 const App = () => {
   const { user } = useAppData();
@@ -30,6 +31,8 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/address" element={<AddAddressPage />} />
+            <Route path="/paymentsuccess/:paymentId" element={<PaymentSuccess />} />
+            <Route path="/ordersuccess" element={<PaymentSuccess />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/select-role" element={<SelectRole />} />
             <Route path="/restaurant/:id" element={<RestaurantPage />} />
